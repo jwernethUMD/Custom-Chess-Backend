@@ -40,8 +40,13 @@ io.on("connection", (socket) => {
             validateGame(false, "Game full")
         } else {
             socket.join(gameCode)
-            socket.to(gameCode).emit("opponent-joined")
-            validateGame(true, "", activeGames.get(gameCode))
+            // Decide which one is white/black
+            let gameCreatorIsWhite = Math.random() > 0.5
+            let gameCreatorColor = gameCreatorIsWhite ? "white" : "black"
+            let gameJoinerColor = gameCreatorIsWhite ? "black" : "white"
+            socket.to(gameCode).emit("opponent-joined", gameCreatorColor)
+            
+            validateGame(true, "", activeGames.get(gameCode), gameJoinerColor)
         }
     })
 
