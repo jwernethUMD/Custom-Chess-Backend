@@ -54,10 +54,15 @@ io.on("connection", (socket) => {
     })
 
     socket.on("player-moved", (gameCode, piece, x, y) => {
-        console.log("player moved", gameCode, socket.id)
+        /*console.log("player moved", gameCode, socket.id)
         const connectedSockets = io.sockets.adapter.rooms.get(gameCode)
-        console.log(connectedSockets)
+        console.log(connectedSockets)*/
         socket.to(gameCode).emit("opponent-moved", piece, x, y)
+        socket.to(gameCode).emit("test")
+    })
+
+    socket.on("player-captured", (gameCode, piece, x, y, capturedPieceId, capturedPieceType, capturedPieceColor) => {
+        socket.to(gameCode).emit("opponent-captured", piece, x, y, capturedPieceId, capturedPieceType, capturedPieceColor)
     })
 
     socket.on("multiplayer-left", () => {
