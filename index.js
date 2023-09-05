@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
         sendCode(roomId)
     })
 
-    socket.on("join-multiplayer", (gameCode, validateGame) => {
+    socket.on("check-multiplayer", (gameCode, validateGame) => {
         const connectedSockets = io.sockets.adapter.rooms.get(gameCode)
         const socketRooms = Array.from(socket.rooms.values()).filter((room) => room !== socket.id)
 
@@ -39,15 +39,25 @@ io.on("connection", (socket) => {
         } else if (socketRooms.length > 0 || connectedSockets.size >= 2) {
             validateGame(false, "Game full")
         } else {
-            socket.join(gameCode)
-            // Decide which one is white/black
-            let gameCreatorIsWhite = Math.random() > 0.5
-            let gameCreatorColor = gameCreatorIsWhite ? "white" : "black"
-            let gameJoinerColor = gameCreatorIsWhite ? "black" : "white"
-            socket.to(gameCode).emit("opponent-joined", gameCreatorColor)
-            
-            validateGame(true, "", activeGames.get(gameCode), gameJoinerColor)
+            validateGame(true, "")
         }
+    })
+
+    socket.on("join-multiplayer", (gameCode, sendGameInfo) => {
+        socket.join(gameCode)
+        // Decide which one is white/black
+        let gameCreatorIsWhite = Math.random() > 0.5
+        let gameCreatorColor = gameCreatorIsWhite ? "white" : "black"
+        let gameJoinerColor = gameCreatorIsWhite ? "black" : "white"
+        socket.to(gameCode).emit("opponent-joined", gameCreatorColor)
+        sendGameInfo(activeGames.get(gameCode), gameJoinerColor)
+    })
+
+    socket.on("player-moved", (gameCode, piece, x, y) => {
+        console.log("player moved", gameCode, socket.id)
+        const connectedSockets = io.sockets.adapter.rooms.get(gameCode)
+        console.log(connectedSockets)
+        socket.to(gameCode).emit("opponent-moved", piece, x, y)
     })
 
     socket.on("multiplayer-left", () => {
