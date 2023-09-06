@@ -66,6 +66,10 @@ io.on("connection", (socket) => {
         socket.to(gameCode).emit("opponent-king-moved", piece, x, y)
     })
 
+    socket.on("player-draw-offer", (gameCode) => {
+        socket.to(gameCode).emit("opponent-draw-offer")
+    })
+
     socket.on("multiplayer-left", () => {
         console.log("HEY HEY!")
     })
