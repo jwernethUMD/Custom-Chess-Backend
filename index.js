@@ -70,7 +70,12 @@ io.on("connection", (socket) => {
         socket.to(gameCode).emit("opponent-draw-offer")
     })
 
+    socket.on("draw-game", (gameCode) => {
+        socket.to(gameCode).emit("draw-game")
+    })
+
     socket.on("multiplayer-left", () => {
-        console.log("HEY HEY!")
+        console.log("Player left")
+        // Remove player from room, remove game from activeGames
     })
 })
