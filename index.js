@@ -1,4 +1,13 @@
-// Make this a map
+const socketio = require("./socket.js")
+const express = require('express')
+const http = require('http')
+
+const app = express()
+const server = http.createServer(app)
+
+// Your Express routes go here
+
+/*
 let activeGames = new Map()
 
 function getMultiplayerId(length) {
@@ -14,15 +23,16 @@ function getMultiplayerId(length) {
     }
 
     return result
-}
+} */
 
-const io = require("socket.io")(5000, {
+/* const io = require("socket.io")(5000, {
     cors: {
         origin: "http://localhost:3000"
     }
-})
+}) */
+const io = socketio.getIo(server)
  
-io.on("connection", (socket) => {
+/* io.on("connection", (socket) => {
     socket.on("multiplayer-started", (rules, sendCode) => {
         let roomId = getMultiplayerId(6)
         activeGames.set(roomId, rules)
@@ -78,4 +88,8 @@ io.on("connection", (socket) => {
         console.log("Player left")
         // Remove player from room, remove game from activeGames
     })
-})
+}) */
+
+server.listen(5000, () => {
+    console.log('Server is running on port 5000');
+});
