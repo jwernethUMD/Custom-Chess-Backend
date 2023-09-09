@@ -25,6 +25,16 @@ userSchema.pre("save", function (next) { // Not arrow function because need "thi
     })
 })
 
+userSchema.methods.comparePassword = function(password, callback) {
+    bcrypt.compare(password, this.password)
+    .then((match) => {
+        return callback(match)
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
+
 const Users = mongoose.model("User", userSchema)
 module.exports = {
     "Users": Users

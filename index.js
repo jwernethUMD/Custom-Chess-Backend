@@ -28,10 +28,11 @@ const io = socketio.getIo(server)
 app.post("/api/signup", async (req, res) => {
     const {username, password} = req.body
     let isValid = false
+    let errMessage = ""
     // Check if username is already in database
     const existUsername = await User.findOne({ username: username})
     if (existUsername) {
-        console.log('username taken')
+        errMessage = "Username unavailable"
     } else {
         // Create new account with username/password combo
         const newUser = new User({
@@ -49,7 +50,7 @@ app.post("/api/signup", async (req, res) => {
         }
     }
 
-    res.status(200).json({isValid: isValid})
+    res.status(200).json({isValid: isValid, errMessage: errMessage})
 })
 
 app.post("/api/login", async (req, res) => {
@@ -59,9 +60,15 @@ app.post("/api/login", async (req, res) => {
 
     const loginUser = await User.findOne({ username: username })
     if (loginUser) {
-        console.log(loginUser)
+        loginUser.comparePassword(password, (match) => {
+            if (match) {
+                isValid = true
+            } else {
+                errMessage = "Invalid password"
+            }
+        })
     } else {
-        errMessage = "User doesn't exist"
+        errMessage = "Invalid username"
     }
 
     res.status(200).json({isValid: isValid, errMessage: errMessage})
