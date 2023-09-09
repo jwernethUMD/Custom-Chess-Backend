@@ -60,7 +60,7 @@ app.post("/api/signup", async (req, res) => {
             losses: 3,
             draws: 5
         })
-        
+
         const userSaved = await newUser.save()
         
         if (userSaved) {
