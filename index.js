@@ -55,7 +55,7 @@ app.post("/api/signup", async (req, res) => {
         // Create new account with username/password combo
         const newUser = new User({
             username: username,
-            password: password,
+            password: password, // NEED TO HASH PASSWORD
             wins: 2,
             losses: 3,
             draws: 5
