@@ -21,25 +21,6 @@ app.use(cors({
     origin: "http://localhost:3000"
 }), express.json())
 
-function getPasswordHash(password) {
-    let hashedPassword
-    bcrypt.genSalt(saltRounds, function (saltError, salt) {
-        if (saltError) {
-            throw saltError
-        } else {
-        bcrypt.hash(password, salt, function(hashError, hash) {
-            if (hashError) {
-                throw hashError
-            } else {
-                hashedPassword = hash
-            }
-            })
-        }
-    })
-
-    return hashedPassword
-}
-
 const server = http.createServer(app)
 
 const io = socketio.getIo(server)
@@ -69,6 +50,21 @@ app.post("/api/signup", async (req, res) => {
     }
 
     res.status(200).json({isValid: isValid})
+})
+
+app.post("/api/login", async (req, res) => {
+    const {username, password} = req.body
+    let isValid = false
+    let errMessage = ""
+
+    const loginUser = await User.findOne({ username: username })
+    if (loginUser) {
+        console.log(loginUser)
+    } else {
+        errMessage = "User doesn't exist"
+    }
+
+    res.status(200).json({isValid: isValid, errMessage: errMessage})
 })
 
 server.listen(5000, () => {
