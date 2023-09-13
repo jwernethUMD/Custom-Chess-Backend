@@ -133,8 +133,13 @@ app.post("/api/gameend", async (req, res) => {
         }
 
         await userStats.save()
-        res.status(200)
+        res.sendStatus(200)
     }
+})
+
+app.get("/api/logout", (req, res) => {
+    req.session.user = ""
+    res.sendStatus(200)
 })
 
 server.listen(PORT, () => {
