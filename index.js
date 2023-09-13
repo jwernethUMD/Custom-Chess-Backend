@@ -47,9 +47,9 @@ app.post("/api/signup", async (req, res) => {
         const newUser = new User({
             username: username,
             password: password, // NEED TO HASH PASSWORD
-            wins: 2,
-            losses: 3,
-            draws: 5
+            wins: 0,
+            losses: 0,
+            draws: 0
         })
 
         const userSaved = await newUser.save()
@@ -97,10 +97,10 @@ app.get("/api/userstats", async (req, res) => {
 
     if (loggedIn) {
         // Get user's stats from database
-        const userstats = await User.findOne({ username: username })
-        wins = userstats.wins
-        losses = userstats.losses
-        draws = userstats.draws
+        const userStats = await User.findOne({ username: username })
+        wins = userStats.wins
+        losses = userStats.losses
+        draws = userStats.draws
     }
 
     res.status(200).json({
@@ -110,6 +110,31 @@ app.get("/api/userstats", async (req, res) => {
         losses: losses,
         draws: draws
     })
+})
+
+app.post("/api/gameend", async (req, res) => {
+    const { result } = req.body
+    const username = req.session.user
+
+    if (username) { // If user is logged in
+        const userStats = await User.findOne({ username: username })
+        switch (result) {
+            case "win":
+                userStats.wins += 1
+                break
+            case "loss":
+                userStats.losses += 1
+                break
+            case "draw":
+                userStats.draws += 1
+                break
+            default:
+                console.error("Invalid match result")
+        }
+
+        await userStats.save()
+        res.status(200)
+    }
 })
 
 server.listen(PORT, () => {
