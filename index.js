@@ -39,26 +39,31 @@ app.post("/api/signup", async (req, res) => {
     let isValid = false
     let errMessage = ""
     // Check if username is already in database
-    const existUsername = await User.findOne({ username: username})
-    if (existUsername) {
-        errMessage = "Username unavailable"
-    } else {
-        // Create new account with username/password combo
-        const newUser = new User({
-            username: username,
-            password: password, // NEED TO HASH PASSWORD
-            wins: 0,
-            losses: 0,
-            draws: 0
-        })
+    try {
+        const existUsername = await User.findOne({ username: username})
+        if (existUsername) {
+            errMessage = "Username unavailable"
+        } else {
+            // Create new account with username/password combo
+            const newUser = new User({
+                username: username,
+                password: password, // NEED TO HASH PASSWORD
+                wins: 0,
+                losses: 0,
+                draws: 0
+            })
 
-        const userSaved = await newUser.save()
-        
-        if (userSaved) {
-            isValid = true
-            req.session.user = username
-            req.session.save()
+            const userSaved = await newUser.save()
+            
+            if (userSaved) {
+                isValid = true
+                req.session.user = username
+                req.session.save()
+            }
         }
+    } catch (error) {
+        console.error(error)
+        errMessage = error
     }
     res.status(200).json({isValid: isValid, errMessage: errMessage})
 })
@@ -68,19 +73,24 @@ app.post("/api/login", async (req, res) => {
     let isValid = false
     let errMessage = ""
 
-    const loginUser = await User.findOne({ username: username })
-    if (loginUser) {
-        await loginUser.comparePassword(password, (match) => {
-            if (match) {
-                isValid = true
-                req.session.user = username
-                req.session.save()
-            } else {
-                errMessage = "Invalid password"
-            }
-        })
-    } else {
-        errMessage = "Invalid username"
+    try {
+        const loginUser = await User.findOne({ username: username })
+        if (loginUser) {
+            await loginUser.comparePassword(password, (match) => {
+                if (match) {
+                    isValid = true
+                    req.session.user = username
+                    req.session.save()
+                } else {
+                    errMessage = "Invalid password"
+                }
+            })
+        } else {
+            errMessage = "Invalid username"
+        }
+    } catch (error) {
+        console.error(error)
+        errMessage = error
     }
     
     res.status(200).json({isValid: isValid, errMessage: errMessage})
@@ -95,12 +105,16 @@ app.get("/api/userstats", async (req, res) => {
     const loggedIn = Boolean(username)
     let wins = 0, losses = 0, draws = 0
 
-    if (loggedIn) {
-        // Get user's stats from database
-        const userStats = await User.findOne({ username: username })
-        wins = userStats.wins
-        losses = userStats.losses
-        draws = userStats.draws
+    try {
+        if (loggedIn) {
+            // Get user's stats from database
+            const userStats = await User.findOne({ username: username })
+            wins = userStats.wins
+            losses = userStats.losses
+            draws = userStats.draws
+        }
+    } catch (error) {
+        console.error(error)
     }
 
     res.status(200).json({
@@ -116,25 +130,30 @@ app.post("/api/gameend", async (req, res) => {
     const { result } = req.body
     const username = req.session.user
 
-    if (username) { // If user is logged in
-        const userStats = await User.findOne({ username: username })
-        switch (result) {
-            case "win":
-                userStats.wins += 1
-                break
-            case "loss":
-                userStats.losses += 1
-                break
-            case "draw":
-                userStats.draws += 1
-                break
-            default:
-                console.error("Invalid match result")
-        }
+    try {
+        if (username) { // If user is logged in
+            const userStats = await User.findOne({ username: username })
+            switch (result) {
+                case "win":
+                    userStats.wins += 1
+                    break
+                case "loss":
+                    userStats.losses += 1
+                    break
+                case "draw":
+                    userStats.draws += 1
+                    break
+                default:
+                    console.error("Invalid match result")
+            }
 
-        await userStats.save()
-        res.sendStatus(200)
+            await userStats.save()
+        }
+    } catch (error) {
+        console.log(error)
     }
+
+    res.sendStatus(200)
 })
 
 app.get("/api/logout", (req, res) => {
