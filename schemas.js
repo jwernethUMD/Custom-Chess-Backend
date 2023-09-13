@@ -25,8 +25,8 @@ userSchema.pre("save", function (next) { // Not arrow function because need "thi
     })
 })
 
-userSchema.methods.comparePassword = function(password, callback) {
-    bcrypt.compare(password, this.password)
+userSchema.methods.comparePassword = async function(password, callback) {
+    await bcrypt.compare(password, this.password)
     .then((match) => {
         return callback(match)
     })

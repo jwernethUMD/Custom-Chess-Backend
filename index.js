@@ -70,7 +70,7 @@ app.post("/api/login", async (req, res) => {
 
     const loginUser = await User.findOne({ username: username })
     if (loginUser) {
-        loginUser.comparePassword(password, (match) => {
+        await loginUser.comparePassword(password, (match) => {
             if (match) {
                 isValid = true
                 req.session.user = username
@@ -82,7 +82,7 @@ app.post("/api/login", async (req, res) => {
     } else {
         errMessage = "Invalid username"
     }
-
+    
     res.status(200).json({isValid: isValid, errMessage: errMessage})
 })
 
