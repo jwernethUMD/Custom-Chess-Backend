@@ -90,6 +90,28 @@ app.get("/api/loggedin", (req, res) => {
     res.status(200).json({loggedIn: Boolean(req.session.user)})
 })
 
+app.get("/api/userstats", async (req, res) => {
+    const username = req.session.user
+    const loggedIn = Boolean(username)
+    let wins = 0, losses = 0, draws = 0
+
+    if (loggedIn) {
+        // Get user's stats from database
+        const userstats = await User.findOne({ username: username })
+        wins = userstats.wins
+        losses = userstats.losses
+        draws = userstats.draws
+    }
+
+    res.status(200).json({
+        loggedIn: loggedIn,
+        username: username,
+        wins: wins,
+        losses: losses,
+        draws: draws
+    })
+})
+
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })
