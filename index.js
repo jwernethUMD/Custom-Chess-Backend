@@ -1,24 +1,33 @@
 const socketio = require("./socket.js")
 const schemas = require("./schemas.js")
 const express = require('express')
+const session = require('express-session')
 const http = require('http')
 const cors = require('cors')
-const bcrypt = require("bcryptjs")
 const mongoose = require("mongoose")
 require('dotenv').config()
 
+const PORT = process.env.PORT || 5000
 const User = schemas.Users
 const dbUsername = process.env.DB_USERNAME
 const dbPassword = process.env.DB_PASSWORD
 const dbUri = `mongodb+srv://${dbUsername}:${dbPassword}@custom-chess.s847jfs.mongodb.net/custom-chess-users?retryWrites=true&w=majority`
 
-const saltRounds = 10
-
 mongoose.connect(dbUri)
 
 const app = express()
+
+// Note: To scale, could use redis
+app.use(
+    session({
+        secret: "my_session_secret", 
+        resave: true, 
+        saveUninitialized: false
+    })
+)
 app.use(cors({
-    origin: "http://localhost:3000"
+    origin: "http://localhost:3000",
+    credentials: true
 }), express.json())
 
 const server = http.createServer(app)
@@ -47,9 +56,10 @@ app.post("/api/signup", async (req, res) => {
         
         if (userSaved) {
             isValid = true
+            req.session.user = username
+            req.session.save()
         }
     }
-
     res.status(200).json({isValid: isValid, errMessage: errMessage})
 })
 
@@ -63,6 +73,8 @@ app.post("/api/login", async (req, res) => {
         loginUser.comparePassword(password, (match) => {
             if (match) {
                 isValid = true
+                req.session.user = username
+                req.session.save()
             } else {
                 errMessage = "Invalid password"
             }
@@ -74,6 +86,10 @@ app.post("/api/login", async (req, res) => {
     res.status(200).json({isValid: isValid, errMessage: errMessage})
 })
 
-server.listen(5000, () => {
-    console.log('Server is running on port 5000')
+app.get("/api/loggedin", (req, res) => {
+    res.status(200).json({loggedIn: Boolean(req.session.user)})
+})
+
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
 })
