@@ -20,6 +20,11 @@ const app = express()
 
 app.use(cookieParser())
 
+app.use(cors({
+    origin: "https://custom-chess-jw.vercel.app",
+    credentials: true
+}), express.json())
+
 // Note: To scale, could use redis
 app.use(
     session({
@@ -33,10 +38,6 @@ app.use(
         }
     })
 )
-app.use(cors({
-    origin: "https://custom-chess-jw.vercel.app",
-    credentials: true
-}), express.json())
 
 const server = http.createServer(app)
 
