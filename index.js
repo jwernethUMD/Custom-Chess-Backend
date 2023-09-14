@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser")
 require('dotenv').config()
 
 const PORT = 5000
+const vercelUrl = "https://custom-chess-jw.vercel.app/"
 const User = schemas.Users
 const dbUsername = process.env.DB_USERNAME
 const dbPassword = process.env.DB_PASSWORD
@@ -21,7 +22,7 @@ const app = express()
 app.use(cookieParser())
 
 app.use(cors({
-    origin: "https://custom-chess-jw.vercel.app",
+    origin: vercelUrl,
     credentials: true
 }), express.json())
 

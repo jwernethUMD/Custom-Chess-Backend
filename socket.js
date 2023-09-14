@@ -1,5 +1,6 @@
 // import { Server } from "socket.io"
 const socketIo = require("socket.io")
+const vercelUrl = "https://custom-chess-jw.vercel.app/"
 
 let activeGames = new Map()
 
@@ -21,7 +22,7 @@ function getMultiplayerId(length) {
 function getIo(server) {
     const io = socketIo(server, {
         cors: {
-            origin: "https://custom-chess-jw.vercel.app",
+            origin: vercelUrl,
             credentials: true
         }
     })
