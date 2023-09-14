@@ -84,6 +84,7 @@ app.post("/api/login", async (req, res) => {
                     isValid = true
                     req.session.user = username
                     req.session.save()
+                    console.log("hihi", req.session.user)
                 } else {
                     errMessage = "Invalid password"
                 }
@@ -100,6 +101,7 @@ app.post("/api/login", async (req, res) => {
 })
 
 app.get("/api/loggedin", (req, res) => {
+    console.log(req.session)
     res.status(200).json({loggedIn: Boolean(req.session.user)})
 })
 
