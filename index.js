@@ -5,6 +5,7 @@ const session = require('express-session')
 const http = require('http')
 const cors = require('cors')
 const mongoose = require("mongoose")
+const cookieParser = require("cookie-parser")
 require('dotenv').config()
 
 const PORT = 5000
@@ -16,6 +17,8 @@ const dbUri = `mongodb+srv://${dbUsername}:${dbPassword}@custom-chess.s847jfs.mo
 mongoose.connect(dbUri)
 
 const app = express()
+
+app.use(cookieParser())
 
 // Note: To scale, could use redis
 app.use(
