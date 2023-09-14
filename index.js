@@ -28,7 +28,7 @@ app.use(
         saveUninitialized: false,
         cookie: {
            secure: true,
-           domain: "https://custom-chess-jw.vercel.app",
+           domain: "custom-chess-jw.vercel.app",
            sameSite: "none",
            maxAge: 1000 * 60 * 60 * 24
         }
