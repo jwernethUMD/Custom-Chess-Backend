@@ -24,7 +24,8 @@ app.use(
         resave: true, 
         saveUninitialized: false,
         cookie: {
-           secure: true
+           secure: true,
+           sameSite: "none"
         }
     })
 )
@@ -155,7 +156,7 @@ app.post("/api/gameend", async (req, res) => {
             await userStats.save()
         }
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 
     res.sendStatus(200)
