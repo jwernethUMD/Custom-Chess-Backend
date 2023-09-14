@@ -26,7 +26,7 @@ app.use(
     })
 )
 app.use(cors({
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true
 }), express.json())
 
