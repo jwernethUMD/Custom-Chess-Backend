@@ -23,9 +23,9 @@ app.use(
         secret: "my_session_secret", 
         resave: true, 
         saveUninitialized: false,
-        cookie: {
-            sameSite: "none"
-        }
+        //cookie: {
+        //   sameSite: "none"
+        //}
     })
 )
 app.use(cors({
