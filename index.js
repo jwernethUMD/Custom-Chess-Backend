@@ -29,7 +29,7 @@ app.use(
     })
 )
 app.use(cors({
-    origin: ["http://localhost:3000", "https://custom-chess-jw.vercel.app/"],
+    origin: "https://custom-chess-jw.vercel.app",
     credentials: true
 }), express.json())
 
