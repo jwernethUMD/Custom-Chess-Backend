@@ -21,7 +21,7 @@ const app = express()
 app.use(cookieParser())
 
 app.use(cors({
-    origin: "*",//"https://custom-chess-jw.vercel.app",
+    origin: "https://custom-chess-jw.vercel.app",
     credentials: true
 }), express.json())
 
