@@ -9,7 +9,6 @@ const cookieParser = require("cookie-parser")
 require('dotenv').config()
 
 const PORT = 5000
-const vercelUrl = "https://custom-chess-jw.vercel.app"
 const User = schemas.Users
 const dbUsername = process.env.DB_USERNAME
 const dbPassword = process.env.DB_PASSWORD
@@ -20,11 +19,6 @@ mongoose.connect(dbUri)
 const app = express()
 
 app.use(cookieParser())
-
-app.use(cors({
-    origin: vercelUrl,
-    credentials: true
-}), express.json())
 
 // Note: To scale, could use redis
 app.use(
@@ -39,6 +33,10 @@ app.use(
         }
     })
 )
+app.use(cors({
+    origin: "https://custom-chess-jw.vercel.app",
+    credentials: true
+}), express.json())
 
 const server = http.createServer(app)
 
