@@ -7,7 +7,7 @@ const cors = require('cors')
 const mongoose = require("mongoose")
 require('dotenv').config()
 
-const PORT = process.env.PORT || 5000
+const PORT = 5000
 const User = schemas.Users
 const dbUsername = process.env.DB_USERNAME
 const dbPassword = process.env.DB_PASSWORD
