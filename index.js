@@ -28,12 +28,6 @@ app.use(cors({
 
 app.use(cookieParser(sessionSecret))
 
-/* app.use((req, res, next) => {
-    console.log("Before session middleware:", req.sessionID);
-    next();
-    console.log("After session middleware:", req.sessionID);
-}) */
-
 // Note: To scale, could use redis
 app.use(
     session({
@@ -47,6 +41,8 @@ app.use(
         }
     })
 )
+
+app.set('trust proxy', 1)
 
 const server = http.createServer(app)
 
