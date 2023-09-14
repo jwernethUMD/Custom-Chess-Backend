@@ -22,7 +22,7 @@ const app = express()
 app.use(cookieParser())
 
 app.use(cors({
-    origin: vercelUrl,
+    origin: "*",
     credentials: true
 }), express.json())
 
