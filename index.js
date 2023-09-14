@@ -14,27 +14,35 @@ const User = schemas.Users
 const dbUsername = process.env.DB_USERNAME
 const dbPassword = process.env.DB_PASSWORD
 const dbUri = `mongodb+srv://${dbUsername}:${dbPassword}@custom-chess.s847jfs.mongodb.net/custom-chess-users?retryWrites=true&w=majority`
+const sessionSecret = "my_session_secret"
+const frontendUrl = process.env.FRONTEND_URL
 
 mongoose.connect(dbUri)
 
 const app = express()
 
-app.use(cookieParser())
-
 app.use(cors({
-    origin: vercelUrl,
+    origin: frontendUrl,
     credentials: true
 }), express.json())
+
+app.use(cookieParser(sessionSecret))
+
+/* app.use((req, res, next) => {
+    console.log("Before session middleware:", req.sessionID);
+    next();
+    console.log("After session middleware:", req.sessionID);
+}) */
 
 // Note: To scale, could use redis
 app.use(
     session({
-        secret: "my_session_secret", 
+        secret: sessionSecret, 
         resave: true, 
         saveUninitialized: false,
         cookie: {
-           secure: true,
-           sameSite: "none",
+           // secure: true,
+           // sameSite: "none",
            maxAge: 1000 * 60 * 60 * 24
         }
     })
@@ -108,7 +116,7 @@ app.post("/api/login", async (req, res) => {
 })
 
 app.get("/api/loggedin", (req, res) => {
-    console.log("Session?", req.session, req.sessionID)
+    console.log("In loggedin:", req.session, req.sessionID)
     res.status(200).json({loggedIn: Boolean(req.session.user)})
 })
 
