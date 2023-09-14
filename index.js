@@ -23,9 +23,9 @@ app.use(
         secret: "my_session_secret", 
         resave: true, 
         saveUninitialized: false,
-        //cookie: {
-        //   sameSite: "none"
-        //}
+        cookie: {
+           secure: true
+        }
     })
 )
 app.use(cors({
@@ -101,7 +101,7 @@ app.post("/api/login", async (req, res) => {
 })
 
 app.get("/api/loggedin", (req, res) => {
-    console.log(req.session)
+    console.log("Session?", req.session)
     res.status(200).json({loggedIn: Boolean(req.session.user)})
 })
 
