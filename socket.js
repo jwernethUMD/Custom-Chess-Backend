@@ -21,7 +21,7 @@ function getMultiplayerId(length) {
 function getIo(server) {
     const io = socketIo(server, {
         cors: {
-            origin: "https://custom-chess-jw.vercel.app"
+            origin: "*"//"https://custom-chess-jw.vercel.app"
         }
     })
 
