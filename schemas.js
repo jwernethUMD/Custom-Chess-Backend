@@ -12,6 +12,10 @@ const userSchema = new Schema({
 })
 
 userSchema.pre("save", function (next) { // Not arrow function because need "this" value
+    if (!this.isModified("password")) {
+        next() // Don't re-encrypt password if it hasn't changed
+    }
+
     bcrypt.genSalt(saltRounds)
     .then((salt) => {
         return bcrypt.hash(this.password, salt)
