@@ -22,7 +22,10 @@ app.use(
     session({
         secret: "my_session_secret", 
         resave: true, 
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: {
+            sameSite: "none"
+        }
     })
 )
 app.use(cors({
