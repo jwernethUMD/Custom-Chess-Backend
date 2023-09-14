@@ -41,7 +41,7 @@ app.use(
         resave: true, 
         saveUninitialized: false,
         cookie: {
-           // secure: true,
+           secure: true,
            // sameSite: "none",
            maxAge: 1000 * 60 * 60 * 24
         }
@@ -50,7 +50,7 @@ app.use(
 
 const server = http.createServer(app)
 
-const io = socketio.getIo(server)
+const io = socketio.getIo(server, frontendUrl)
 
 app.post("/api/signup", async (req, res) => {
     const {username, password} = req.body
